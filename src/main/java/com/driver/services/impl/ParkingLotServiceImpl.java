@@ -1,5 +1,7 @@
 package com.driver.services.impl;
 
+import com.driver.model.ParkingLot;
+import com.driver.model.Spot;
 import com.driver.model.SpotType;
 import com.driver.repository.ParkingLotRepository;
 import com.driver.repository.SpotRepository;
@@ -18,26 +20,63 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     SpotRepository spotRepository1;
     @Override
     public ParkingLot addParkingLot(String name, String address) {
-
+        ParkingLot parkingLot= new ParkingLot(name,address);
+     parkingLotRepository1.save(parkingLot);
+     return parkingLot;
     }
 
     @Override
     public Spot addSpot(int parkingLotId, Integer numberOfWheels, Integer pricePerHour) {
-
+        SpotType spotType;
+        if(numberOfWheels<=2){
+            spotType=SpotType.TWO_WHEELER;
+        } else if (numberOfWheels>2 && numberOfWheels<=4) {
+           spotType=SpotType.FOUR_WHEELER;
+        }
+        else {
+            spotType=spotType.OTHERS;
+        }
+        Spot spot=new Spot(spotType,pricePerHour,false);
+        ParkingLot parkingLot=parkingLotRepository1.findById(parkingLotId).get();
+spot.setParkingLot(parkingLot);
+List<Spot> spotList=parkingLot.getSpotList();
+if(spotList==null){
+    spotList=new ArrayList<>();
+}
+spotList.add(spot);
+parkingLot.setSpotList(spotList);
+spotRepository1.save(parkingLot);
+return spot;
     }
 
     @Override
     public void deleteSpot(int spotId) {
 
+spotRepository1.deleteById(spotId);
+
     }
 
     @Override
     public Spot updateSpot(int parkingLotId, int spotId, int pricePerHour) {
+        ParkingLot parkingLot=parkingLotRepository1.findById(parkingLotId).get();
+List<Spot> spotList=parkingLot.getSpotList();
+Spot spot=new Spot();
+        for(Spot spot1: spotList){
+            if(spot1.getId()==spotId){
+                spot1.setPricePerHour(pricePerHour);
+                spot1.setParkingLot(parkingLot);
+                spot1=spot;
+                break;
+            }
+        }
 
+parkingLotRepository1.save(parkingLot);
+spotRepository1.save(spot);
+return spot;
     }
 
     @Override
     public void deleteParkingLot(int parkingLotId) {
-
+parkingLotRepository1.deleteById(parkingLotId);
     }
 }
