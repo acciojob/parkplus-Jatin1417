@@ -1,37 +1,38 @@
 package com.driver.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table
+@Table(name = "users")
+
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-     int id;
+    private int id;
 
-    String name;
+    private String name;
 
-    String phoneNumber;
+    private String phoneNumber;
 
-    String password;
+    private String password;
 
-    @OneToOne
-            @JoinColumn
-    List<Reservation> reservationList;
-
-    public User(String name, String phoneNumber, String password) {
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.password = password;
-    }
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Reservation> reservations = new ArrayList<>();
 
     public User() {
     }
 
     public int getId() {
         return id;
+    }
+
+    public User(String name, String phoneNumber, String password) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
     }
 
     public void setId(int id) {
@@ -63,10 +64,10 @@ public class User {
     }
 
     public List<Reservation> getReservationList() {
-        return reservationList;
+        return reservations;
     }
 
-    public void setReservationList(List<Reservation> reservationList) {
-        this.reservationList = reservationList;
+    public void setReservationList(List<Reservation> reservations) {
+        this.reservations = reservations;
     }
 }

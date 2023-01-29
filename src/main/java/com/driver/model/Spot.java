@@ -1,39 +1,36 @@
 package com.driver.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table
+@Table(name = "spots")
+
 public class Spot {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    private int id;
 
     @Enumerated(value = EnumType.STRING)
-    SpotType spotType;
+    private SpotType spotType;
 
-    int pricePerHour;
-    Boolean occupied;
+    private int pricePerHour;
+
+    private boolean occupied;
 
     @ManyToOne
     @JoinColumn
-    public ParkingLot parkingLot;
+    private ParkingLot parkingLot;
 
-    @OneToMany(mappedBy = "spot",cascade = CascadeType.ALL)
-    List<Reservation> reservationList;
+    @OneToMany(mappedBy = "spot", cascade = CascadeType.ALL)
+    private List<Reservation> reservations = new ArrayList<>();
 
-    public Spot(SpotType spotType, int pricePerHour, Boolean occupied) {
-        this.spotType = spotType;
-        this.pricePerHour = pricePerHour;
-        this.occupied = occupied;
+    public Spot() {
     }
 
-    public Spot(ParkingLot parkingLot,Integer numberOfWheels, Integer pricePerHour) {
-        this.spotType = spotType;
-        this.pricePerHour = pricePerHour;
-        this.parkingLot = parkingLot;
-    }
+
 
     public int getId() {
         return id;
@@ -59,11 +56,11 @@ public class Spot {
         this.pricePerHour = pricePerHour;
     }
 
-    public Boolean getOccupied() {
+    public boolean getOccupied() {
         return occupied;
     }
 
-    public void setOccupied(Boolean occupied) {
+    public void setOccupied(boolean occupied) {
         this.occupied = occupied;
     }
 
@@ -76,13 +73,10 @@ public class Spot {
     }
 
     public List<Reservation> getReservationList() {
-        return reservationList;
+        return reservations;
     }
 
-    public void setReservationList(List<Reservation> reservationList) {
-        this.reservationList = reservationList;
-    }
-
-    public Spot() {
+    public void setReservationList(List<Reservation> reservations) {
+        this.reservations = reservations;
     }
 }
